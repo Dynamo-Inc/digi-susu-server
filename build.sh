@@ -1,0 +1,9 @@
+rm -rf dist
+tsc -p .
+ls -l dist
+mkdir -p dist/src/config/
+mkdir -p dist/src/migrations/
+mkdir -p dist/src/templates/email/
+cp src/templates/email/*.html dist/src/templates/email/
+cp src/config/database.js dist/src/config/
+cp src/migrations/* dist/src/migrations/
