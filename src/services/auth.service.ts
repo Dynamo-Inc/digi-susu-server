@@ -27,11 +27,13 @@ export class AuthService {
   }> {
     const transaction = await sequelize.transaction();
     try {
-      const email = userData?.email?.toLowerCase();
+      const existingUser = await User.findOne({
+        where: {
+          [Op.or]: [{ email: userData?.email?.toLocaleLowerCase() }, { phoneNumber: userData?.phoneNumber }],
+        },
+      });
 
-      const existingUser = await User.findOne({ where: { email } });
-
-      if (existingUser) throw new HttpException(httpStatus.BAD_REQUEST, 'Email already exists');
+      if (existingUser) throw new HttpException(httpStatus.BAD_REQUEST, 'User already exists');
 
       const user = await User.create(
         {
