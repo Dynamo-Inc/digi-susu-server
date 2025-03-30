@@ -8,6 +8,8 @@ import { ALL_ROLES, ROLE_RIGHTS } from '../config/roles';
 const AUTH_ERR_MSG = 'Please authenticate';
 
 const verifyCallback = (req: RequestWithUser, resolve, reject, requiredRights?: string[]) => async (err, user, info) => {
+  console.log('verifyCallback', err, user, info);
+
   if (err || info || !user) {
     return reject(new HttpException(httpStatus.UNAUTHORIZED, AUTH_ERR_MSG));
   }

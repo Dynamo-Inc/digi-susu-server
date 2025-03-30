@@ -37,10 +37,11 @@ export class MonoService {
    */
   public async createCustomer(data: CreateCustomerRequest) {
     try {
-      const response = await this.mono.post('/customers', data);
+      const { userId, ...customerData } = data;
+      const response = await this.mono.post('/customers', customerData);
       console.log(response.data.data);
 
-      await this.userService.updateUser(data.userId, {
+      await this.userService.updateUser(userId, {
         monoCustomerId: response?.data?.data?.id,
       });
 

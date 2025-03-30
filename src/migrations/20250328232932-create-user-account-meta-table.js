@@ -12,6 +12,11 @@ module.exports = {
         defaultValue: false,
         allowNull: false,
       },
+      is_phone_verified: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+        allowNull: false,
+      },
       has_agreed_to_terms_and_agreements: {
         type: Sequelize.BOOLEAN,
         defaultValue: false,

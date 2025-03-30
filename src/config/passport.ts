@@ -18,7 +18,8 @@ export const userJwtVerify = async (payload: DataStoredInUserSession, done) => {
       payload.type !== UserSessionTypes.ACCESS &&
       payload.type !== UserSessionTypes.VERIFY_EMAIL &&
       payload.type !== UserSessionTypes.RESET_PASSWORD &&
-      payload.type !== UserSessionTypes.VERIFY_PHONE
+      payload.type !== UserSessionTypes.VERIFY_PHONE &&
+      payload.type !== UserSessionTypes.SET_KYC
     ) {
       throw new Error('Invalid token type');
     }

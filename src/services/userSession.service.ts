@@ -31,11 +31,15 @@ export class UserSessionService {
   };
 
   public async saveSession(tokenBody: Partial<UserSession>): Promise<UserSession> {
-    tokenBody.expiresAt = tokenBody.expiresAt || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+    try {
+      tokenBody.expiresAt = tokenBody.expiresAt || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
 
-    return (await UserSession.create({
-      ...tokenBody,
-    })) as UserSession;
+      return (await UserSession.create({
+        ...tokenBody,
+      })) as UserSession;
+    } catch (e) {
+      console.log('saveSession', e);
+    }
   }
 
   public async verifySession(token: string, type: UserSessionType) {
@@ -140,21 +144,25 @@ export class UserSessionService {
   }
 
   public async generateSetKycSessionToken(user: User): Promise<string> {
-    const expires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
-    const token = this.generateSessionToken({
-      userId: user.id,
-      type: UserSessionTypes.SET_KYC,
-      expires: expires.getTime(),
-    });
+    try {
+      const expires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+      const token = this.generateSessionToken({
+        userId: user.id,
+        type: UserSessionTypes.SET_KYC,
+        expires: expires.getTime(),
+      });
 
-    await this.saveSession({
-      token,
-      userId: user.id,
-      expiresAt: expires,
-      type: UserSessionTypes.SET_KYC,
-    });
+      await this.saveSession({
+        token,
+        userId: user.id,
+        expiresAt: expires,
+        type: UserSessionTypes.SET_KYC,
+      });
 
-    return token;
+      return token;
+    } catch (e) {
+      console.log('generateSetKycSessionToken', e);
+    }
   }
 
   public async generateVerifyPhoneSessionToken(user: User, code: string): Promise<string> {

@@ -34,12 +34,16 @@ export class AuthController {
   public setKycForUser = catchAsync(async (req: RequestWithUser, res: Response) => {
     const userData: UserKYCSetUpDto = req.body;
 
+    console.log('setKycForUser', req?.user?.id, req?.user?.email, userData);
+
     const verifyData = await this.auth.setKycForUser(req?.user?.id, userData);
     res.status(httpStatus.OK).send(verifyData);
   });
 
   public verifySMSOTPForUser = catchAsync(async (req: RequestWithUser, res: Response) => {
     const userData: VerifyUserEmailDto = req.body;
+
+    console.log('verifySMSOTPForUser', req?.user?.id, req?.user?.phoneNumber, userData?.code);
 
     const verifyData = await this.auth.verifySMSOTPForUser(req?.user?.id, req?.user?.phoneNumber, userData?.code);
     res.status(httpStatus.OK).send(verifyData);

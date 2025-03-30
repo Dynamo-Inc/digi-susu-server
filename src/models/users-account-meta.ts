@@ -3,6 +3,7 @@ import { Model, InferAttributes, InferCreationAttributes, Sequelize, DataTypes, 
 class UserAccountMeta extends Model<InferAttributes<UserAccountMeta>, InferCreationAttributes<UserAccountMeta>> {
   declare id: CreationOptional<number>;
   declare isEmailVerified: boolean;
+  declare isPhoneVerified: boolean;
   declare hasAgreedToTermsAndAgreements: boolean;
   declare authType?: string;
   declare ownerId: string;
@@ -29,6 +30,11 @@ export const initUserAccountMeta = (sequelize: Sequelize) => {
         primaryKey: true,
       },
       isEmailVerified: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
+      isPhoneVerified: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false,

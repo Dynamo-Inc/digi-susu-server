@@ -107,7 +107,7 @@ export class AuthService {
         userId: user?.id,
       });
 
-      return (await User.findOne({ where: { id: userId } })).get({ plain: true });
+      return { user: (await User.findOne({ where: { id: userId } })).get({ plain: true }) };
     } catch (error) {
       throw new HttpException(error?.status, error?.message);
     }
@@ -155,23 +155,35 @@ export class AuthService {
       where: { userId: userId, phone: _phone, otp: otpCode, type: TokenTypes.VERIFY_PHONE },
     });
 
+    console.log('STEP 1 complted');
+
     if (!tokenDoc) throw new HttpException(httpStatus.UNAUTHORIZED, 'Invalid OTP');
 
-    const verifiedToken = await this.userSessionService.verifySession(tokenDoc.token, TokenTypes.VERIFY_EMAIL);
+    console.log('STEP 2 complted');
+
+    const verifiedToken = await this.userSessionService.verifySession(tokenDoc.token, TokenTypes.VERIFY_PHONE);
+
+    console.log('STEP 3 complted');
 
     if (!verifiedToken) throw new HttpException(httpStatus.UNAUTHORIZED, 'Invalid OTP');
 
+    console.log('STEP 4 complted');
+
     const { otp, phone } = verifiedToken;
+
+    console.log(otp, 'otp');
+    console.log(phone, 'phone');
+
     if (!otp || !phone) throw new HttpException(httpStatus.UNAUTHORIZED, 'Invalid OTP');
     if (otp !== otpCode) throw new HttpException(httpStatus.UNAUTHORIZED, 'Invalid OTP');
     if (phone !== _phone) throw new HttpException(httpStatus.UNAUTHORIZED, 'Invalid OTP');
-    if (verifiedToken.email !== _phone) throw new HttpException(httpStatus.UNAUTHORIZED, 'Invalid OTP');
+    if (verifiedToken.phone !== _phone) throw new HttpException(httpStatus.UNAUTHORIZED, 'Invalid OTP');
 
     const user = await User.findOne({ where: { id: userId } });
 
     if (!user) throw new HttpException(httpStatus.NOT_FOUND, 'User not found');
 
-    await UserAccountMeta.update({ isEmailVerified: true }, { where: { ownerId: user?.id } });
+    await UserAccountMeta.update({ isPhoneVerified: true }, { where: { ownerId: user?.id } });
 
     await UserSession.destroy({ where: { userId: userId, phone: _phone, otp: otpCode, type: TokenTypes.VERIFY_PHONE } });
 
